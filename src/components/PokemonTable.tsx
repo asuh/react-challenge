@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import fetchPokemon from '../hooks/fetchPokemon';
 import './PokemonTable.css';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
@@ -12,7 +13,12 @@ const PokemonTable: React.FC = () => {
   const [pokemon, setPokemon] = useState<{ name: string; url: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const pageParam = parseInt(searchParams.get('page') || '1', 10);
+  const [currentPage, setCurrentPage] = useState(pageParam);
 
   useEffect(() => {
     let ignore = false;
@@ -39,6 +45,10 @@ const PokemonTable: React.FC = () => {
     return () => { ignore = false; };
   }, []);
 
+  useEffect(() => {
+    setSearchParams({ page: String(currentPage) });
+  }, [currentPage, setSearchParams]);
+
   const totalPages = Math.ceil(pokemon.length / ROWS_PER_PAGE);
   const startIndex = (currentPage - 1) * ROWS_PER_PAGE;
   const endIndex = startIndex + ROWS_PER_PAGE;
@@ -49,6 +59,8 @@ const PokemonTable: React.FC = () => {
   const handlePrevPage = () => setCurrentPage((page) => Math.max(1, page - 1));
   const handleNextPage = () => setCurrentPage((page) => Math.min(totalPages, page + 1));
 
+  const handleRowClick = (poke: { name: string }) => navigate(`/pokemon/${poke.name}?page=${currentPage}`);
+
   if (loading) return <div className="pokemon-table-container">Loading Pokémon...</div>;
   if (error) return <div className="pokemon-table-error">Error: {error}</div>;
 
@@ -57,13 +69,22 @@ const PokemonTable: React.FC = () => {
       <table className="pokemon-table">
         <thead>
           <tr>
-            <th>Pokemon Name</th>
+            <th>Pokémon Name</th>
           </tr>
         </thead>
         <tbody>
           {pageData.map((poke) => (
             <tr key={poke.name}>
-              <td>{poke.name}</td>
+              <td>
+                <a
+                  href="#"
+                  className="pokemon-table-link"
+                  onClick={e => { e.preventDefault(); handleRowClick(poke); }}
+                  role="button"
+                >
+                  {poke.name}
+                </a>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -93,4 +114,4 @@ const PokemonTable: React.FC = () => {
   );
 };
 
-export { PokemonTable };
+export default PokemonTable;

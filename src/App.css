@@ -1,3 +1,13 @@
+:root {
+  --color-primary: #1976d2;
+  --color-primary-dark: #0d47a1;
+  --color-table-header: #adcdf7;
+  --color-error: red;
+  --color-outline: #90caf9;
+  --color-table-link: #000;
+  --pagination-background: #deebfd;
+}
+
 *,
 *::after,
 *::before {

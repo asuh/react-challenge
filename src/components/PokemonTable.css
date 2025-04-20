@@ -23,16 +23,40 @@
   padding: 1rem;
   text-transform: capitalize;
   text-align: start;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+
+.pokemon-table-link {
+  color: var(--color-table-link);
+  cursor: pointer;
+  display: block;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.pokemon-table-link:active {
+  color: var(--color-primary);
+}
+
+.pokemon-table-link:hover,
+.pokemon-table-link:focus {
+  color: var(--color-primary-dark);
+  outline-offset: 2px;
+  text-decoration: underline;
 }
 
 .pokemon-table-error {
-  color: red;
+  color: var(--color-error);
   padding: 2rem;
   text-align: center;
 }
 
 .pokemon-table-pagination {
-  background-color: #deebfd;
+  background-color: var(--pagination-background);
   padding: 0.5rem;
   display: flex;
   justify-content: center;

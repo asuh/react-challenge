@@ -1,4 +1,4 @@
-async function FetchPokemon() {
+async function fetchPokemon() {
   let response;
   try {
     response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151');
@@ -14,7 +14,7 @@ async function FetchPokemon() {
     throw new Error(message);
   }
 
-  let data: string[];
+  let data: any;
   try {
     data = await response.json();
   } catch (error) {
@@ -27,8 +27,9 @@ async function FetchPokemon() {
   if (!data || typeof data !== 'object') {
     throw new Error('Invalid API response from the API');
   }
+  console.log({data})
 
   return data;
 };
 
-export default FetchPokemon;
+export default fetchPokemon;

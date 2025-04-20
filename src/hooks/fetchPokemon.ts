@@ -1,7 +1,7 @@
 async function fetchPokemon() {
   let response;
   try {
-    response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151');
+    response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=250&offset=0');
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Network error: ${error.message}`);

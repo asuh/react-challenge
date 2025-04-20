@@ -1,0 +1,34 @@
+async function FetchPokemon() {
+  let response;
+  try {
+    response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151');
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Network error: ${error.message}`);
+    }
+    throw new Error('Network error');
+  }
+
+  if (!response.ok) {
+    const message = `HTTP error! status: ${response.status}`;
+    throw new Error(message);
+  }
+
+  let data: string[];
+  try {
+    data = await response.json();
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`API response error: ${error.message}`);
+    }
+    throw new Error('API response error');
+  }
+
+  if (!data || typeof data !== 'object') {
+    throw new Error('Invalid API response from the API');
+  }
+
+  return data;
+};
+
+export default FetchPokemon;

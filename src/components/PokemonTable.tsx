@@ -13,10 +13,9 @@ const PokemonTable: React.FC = () => {
   const [pokemon, setPokemon] = useState<{ name: string; url: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-
   const pageParam = parseInt(searchParams.get('page') || '1', 10);
   const [currentPage, setCurrentPage] = useState(pageParam);
 
@@ -46,7 +45,11 @@ const PokemonTable: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setSearchParams({ page: String(currentPage) });
+    if (currentPage === 1) {
+      setSearchParams({});
+    } else {
+      setSearchParams({ page: String(currentPage) });
+    }
   }, [currentPage, setSearchParams]);
 
   const totalPages = Math.ceil(pokemon.length / ROWS_PER_PAGE);
@@ -59,7 +62,8 @@ const PokemonTable: React.FC = () => {
   const handlePrevPage = () => setCurrentPage((page) => Math.max(1, page - 1));
   const handleNextPage = () => setCurrentPage((page) => Math.min(totalPages, page + 1));
 
-  const handleRowClick = (poke: { name: string }) => navigate(`/pokemon/${poke.name}?page=${currentPage}`);
+  const handleRowClick = (poke: { name: string }) =>
+    navigate(`/pokemon/${poke.name}`, { state: { fromPage: currentPage } });
 
   if (loading) return <div className="pokemon-table-container">Loading Pokémon...</div>;
   if (error) return <div className="pokemon-table-error">Error: {error}</div>;

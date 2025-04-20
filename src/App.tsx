@@ -1,10 +1,12 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PokemonTable from './components/PokemonTable';
 import PokemonDetails from './components/PokemonDetails';
 import './App.css';
+import { PokemonCacheProvider } from './context/PokemonCacheContext';
 
-const App = () => {
-  return (
+const App: React.FC = () => (
+  <PokemonCacheProvider>
     <Router>
       <h1>Pokemons</h1>
       <Routes>
@@ -12,7 +14,7 @@ const App = () => {
         <Route path="/pokemon/:name" element={<PokemonDetails />} />
       </Routes>
     </Router>
-  );
-};
+  </PokemonCacheProvider>
+);
 
 export default App;

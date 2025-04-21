@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
-import fetchPokemonDetails from '../hooks/fetchPokemonDetails';
+import fetchPokemon from '../hooks/fetchPokemon';
 import { usePokemonCache } from '../context/PokemonCacheContext';
 import './PokemonDetails.css';
 
@@ -61,7 +61,7 @@ const PokemonDetails: React.FC = () => {
         if (name && cache.pokemon[name]) {
           data = cache.pokemon[name];
         } else {
-          const result = await fetchPokemonDetails(name!);
+          const result = await fetchPokemon(name!);
           if (result.error) throw result.error;
           data = result.data;
           setPokemon(name!, data);
@@ -83,18 +83,19 @@ const PokemonDetails: React.FC = () => {
   }, [name]);
 
   return (
-    <div className="pokemon-details-container">
-      <h2 className="pokemon-details-title">Selected Pokémon: {name}</h2>
+    <div className="pokemon-details-container" tabIndex={0} role="region" aria-labelledby="pokemon-details-title" aria-describedby="pokemon-details-description">
+      <h2 className="pokemon-details-title" id="pokemon-details-title">Selected Pokémon: {name}</h2>
       {loading ? (
         <div>Loading abilities...</div>
       ) : error ? (
         <div className="pokemon-details-error">Error: {error}</div>
       ) : (
         <table className="pokemon-details-table">
+          <caption id="pokemon-details-description" className="visually-hidden">Abilities of {name}</caption>
           <thead>
             <tr>
-              <th>Ability</th>
-              <th>Ability Effect</th>
+              <th scope="col">Ability</th>
+              <th scope="col">Ability Effect</th>
             </tr>
           </thead>
           <tbody>

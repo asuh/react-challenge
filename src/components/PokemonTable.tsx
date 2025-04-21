@@ -10,7 +10,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 const ROWS_PER_PAGE = 5;
 
 const PokemonTable: React.FC = () => {
-  const [pokemon, setPokemon] = useState<{ name: string; url: string }[]>([]);
+  const [pokemon, setPokemon] = useState<Array<{ name: string; url: string }>>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,14 +26,14 @@ const PokemonTable: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const { error, results } = await fetchPokemon()
+      const { error: pokemonError, data: pokemonData } = await fetchPokemon()
 
       if (ignore) {
         return
-      } else if (error) {
-        setError(error.message);
+      } else if (pokemonError) {
+        setError(pokemonError.message);
       } else {
-        setPokemon(results);
+        setPokemon(pokemonData.results);
       }
 
       setLoading(false);
@@ -69,11 +69,12 @@ const PokemonTable: React.FC = () => {
   if (error) return <div className="pokemon-table-error">Error: {error}</div>;
 
   return (
-    <div className="pokemon-table-container">
+    <div className="pokemon-table-container" tabIndex={0} role="region" aria-labelledby="pokemon-table-title">
       <table className="pokemon-table">
+        <caption id="pokemon-table-title" className="visually-hidden">Pokémon List, five at a time, click to view details</caption>
         <thead>
           <tr>
-            <th>Pokémon Name</th>
+            <th scope="col">Pokémon Name</th>
           </tr>
         </thead>
         <tbody>

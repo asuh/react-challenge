@@ -8,7 +8,7 @@ import { PokemonCacheProvider } from './context/PokemonCacheContext';
 const App: React.FC = () => (
   <PokemonCacheProvider>
     <Router>
-      <h1>Pokemons</h1>
+      <h1>Pokemon List</h1>
       <Routes>
         <Route path="/" element={<PokemonTable />} />
         <Route path="/pokemon/:name" element={<PokemonDetails />} />

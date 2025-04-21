@@ -1,7 +1,7 @@
-async function fetchPokemon() {
+async function fetchPokemon(name?: string): Promise<{ error: Error | null; data: any }> {
   let response;
   try {
-    response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=250&offset=0');
+    response = await fetch(`https://pokeapi.co/api/v2/pokemon${name ? `/${name}` : '?limit=250&offset=0'}`);
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Network error: ${error.message}`);
@@ -27,9 +27,8 @@ async function fetchPokemon() {
   if (!data || typeof data !== 'object') {
     throw new Error('Invalid API response from the API');
   }
-  console.log({data})
 
-  return data;
+  return { error: null, data };
 };
 
 export default fetchPokemon;

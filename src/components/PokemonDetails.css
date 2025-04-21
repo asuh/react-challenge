@@ -2,8 +2,29 @@
   margin-inline: auto;
   max-width: 46rem;
   padding: 2rem;
+  position: relative;
   text-align: center;
   width: 100%;
+
+  @media (width < 46em) {
+    overflow: scroll;
+
+    &::after {
+      background-image: linear-gradient(90deg, transparent, transparent, rgba(255, 255, 255, 0.8));
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+  }
+}
+
+.pokemon-details-back-row {
+  inset-inline-end: 1rem;
 }
 
 .pokemon-details-back-link {
@@ -20,16 +41,23 @@
   text-align: start;
 }
 
+.pokemon-details-table {
+  width: max(40rem, 100%);
+}
+
 .pokemon-details-table th {
   background-color: var(--color-table-header);
   font-weight: 400;
   padding: 1rem;
   text-align: left;
+  width: max-content;
 }
+
 .pokemon-details-table td {
   padding: 1rem;
   text-align: start;
 }
+
 .pokemon-details-error {
   color: var(--color-error);
   padding: 2rem;

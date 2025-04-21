@@ -1,94 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
-import fetchPokemon from '../hooks/fetchPokemon';
-import { usePokemonCache } from '../context/PokemonCacheContext';
+import { usePokemonDetails } from '../hooks/usePokemonDetails';
+import { usePokemonAbility } from '../hooks/usePokemonAbility';
 import './PokemonDetails.css';
 
 interface Ability {
   ability: { name: string; url: string };
 }
-interface AbilityWithEffect {
-  name: string;
-  effect: string;
-}
 
-async function fetchAbilityEffects(
-  abilityData: Ability[],
-  abilityCache: { [abilityName: string]: string },
-  setAbilityEffect: (abilityName: string, effect: string) => void
-): Promise<AbilityWithEffect[]> {
-  return Promise.all(
-    abilityData.map(async (ab: Ability) => {
-      const cachedEffect = abilityCache[ab.ability.name];
-      if (cachedEffect) {
-        return { name: ab.ability.name, effect: cachedEffect };
-      }
-      try {
-        const res = await fetch(ab.ability.url);
-        if (!res.ok) throw new Error();
-        const abilityDetail = await res.json();
-        const effectEntry = (abilityDetail.effect_entries || []).find(
-          (entry: any) => entry.language.name === 'en'
-        );
-        const effect = effectEntry ? effectEntry.effect : 'No effect found';
-        setAbilityEffect(ab.ability.name, effect);
-        return { name: ab.ability.name, effect };
-      } catch {
-        const errorMsg = 'Error loading effect';
-        setAbilityEffect(ab.ability.name, errorMsg);
-        return { name: ab.ability.name, effect: errorMsg };
-      }
-    })
+const AbilityRow: React.FC<{ abilityName: string }> = ({ abilityName }) => {
+  const { data, isLoading, error } = usePokemonAbility(abilityName);
+  return (
+    <tr key={abilityName}>
+      <td>{abilityName}</td>
+      <td>
+        {isLoading && 'Loading...'}
+        {error && <span className="pokemon-details-error">Error</span>}
+        {data && data.effect_entries.length > 0
+          ? data.effect_entries[0].effect
+          : data && 'No effect found'}
+      </td>
+    </tr>
   );
-}
+};
 
 const PokemonDetails: React.FC = () => {
   const { name } = useParams<{ name: string }>();
   const location = useLocation();
   const fromPage = location.state?.fromPage || 1;
-  const [abilities, setAbilities] = useState<AbilityWithEffect[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { cache, setPokemon, setAbilityEffect } = usePokemonCache();
-
-  useEffect(() => {
-    const fetchAbilities = async () => {
-      setLoading(true);
-      setError(null);
-      setAbilities([]);
-      try {
-        let data;
-        if (name && cache.pokemon[name]) {
-          data = cache.pokemon[name];
-        } else {
-          const result = await fetchPokemon(name!);
-          if (result.error) throw result.error;
-          data = result.data;
-          setPokemon(name!, data);
-        }
-        const abilityData = data.abilities || [];
-        if (abilityData.length === 0) {
-          setAbilities([]);
-        } else {
-          const effects = await fetchAbilityEffects(abilityData, cache.abilities, setAbilityEffect);
-          setAbilities(effects);
-        }
-      } catch (err: any) {
-        setError(err.message || 'Unknown error');
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (name) fetchAbilities();
-  }, [name]);
+  const { data, isLoading, error } = usePokemonDetails(name!);
 
   return (
     <div className="pokemon-details-container" tabIndex={0} role="region" aria-labelledby="pokemon-details-title" aria-describedby="pokemon-details-description">
       <h2 className="pokemon-details-title" id="pokemon-details-title">Selected Pokémon: {name}</h2>
-      {loading ? (
+      {isLoading ? (
         <div>Loading abilities...</div>
       ) : error ? (
-        <div className="pokemon-details-error">Error: {error}</div>
+        <div className="pokemon-details-error">Error: {error.message || String(error)}</div>
       ) : (
         <table className="pokemon-details-table">
           <caption id="pokemon-details-description" className="visually-hidden">Abilities of {name}</caption>
@@ -99,11 +47,8 @@ const PokemonDetails: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {abilities.map((ability) => (
-              <tr key={ability.name}>
-                <td>{ability.name}</td>
-                <td>{ability.effect}</td>
-              </tr>
+            {data?.abilities?.map((ab: Ability) => (
+              <AbilityRow key={ab.ability.name} abilityName={ab.ability.name} />
             ))}
           </tbody>
         </table>

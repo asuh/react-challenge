@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import fetchPokemon from '../hooks/fetchPokemon';
+import { usePokemonList } from '../hooks/usePokemonList';
 import './PokemonTable.css';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
@@ -10,39 +10,13 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 const ROWS_PER_PAGE = 5;
 
 const PokemonTable: React.FC = () => {
-  const [pokemon, setPokemon] = useState<Array<{ name: string; url: string }>>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const pageParam = parseInt(searchParams.get('page') || '1', 10);
   const [currentPage, setCurrentPage] = useState(pageParam);
 
-  useEffect(() => {
-    let ignore = false;
-
-    const handleFetchPokemon = async () => { 
-      setLoading(true);
-      setError(null);
-
-      const { error: pokemonError, data: pokemonData } = await fetchPokemon()
-
-      if (ignore) {
-        return
-      } else if (pokemonError) {
-        setError(pokemonError.message);
-      } else {
-        setPokemon(pokemonData.results);
-      }
-
-      setLoading(false);
-    }
-    
-    handleFetchPokemon();
-
-    return () => { ignore = false; };
-  }, []);
+  const offset = 0;
+  const { data, isLoading, error } = usePokemonList(offset);
 
   useEffect(() => {
     if (currentPage === 1) {
@@ -52,10 +26,12 @@ const PokemonTable: React.FC = () => {
     }
   }, [currentPage, setSearchParams]);
 
-  const totalPages = Math.ceil(pokemon.length / ROWS_PER_PAGE);
+  const allPokemon = data?.results || [];
+
+  const totalPages = Math.ceil(allPokemon.length / ROWS_PER_PAGE);
   const startIndex = (currentPage - 1) * ROWS_PER_PAGE;
   const endIndex = startIndex + ROWS_PER_PAGE;
-  const pageData = pokemon.slice(startIndex, endIndex);
+  const pageData = allPokemon.slice(startIndex, endIndex);
 
   const handleFirstPage = () => setCurrentPage(1);
   const handleLastPage = () => setCurrentPage(totalPages);
@@ -65,8 +41,8 @@ const PokemonTable: React.FC = () => {
   const handleRowClick = (poke: { name: string }) =>
     navigate(`/pokemon/${poke.name}`, { state: { fromPage: currentPage } });
 
-  if (loading) return <div className="pokemon-table-container">Loading Pokémon...</div>;
-  if (error) return <div className="pokemon-table-error">Error: {error}</div>;
+  if (isLoading) return <div className="pokemon-table-container">Loading Pokémon...</div>;
+  if (error) return <div className="pokemon-table-error">Error: {error.message || String(error)}</div>;
 
   return (
     <div className="pokemon-table-container" tabIndex={0} role="region" aria-labelledby="pokemon-table-title">

@@ -58,6 +58,10 @@
   text-align: start;
 }
 
+.pokemon-details-table tr:nth-child(odd) td {
+  background-color: #f8f8f8;
+}
+
 .pokemon-details-error {
   color: var(--color-error);
   padding: 2rem;

@@ -1,14 +1,11 @@
 .pokemon-table-container {
   margin-inline: auto;
-  max-width: 46rem;
-  padding: 2rem;
+  max-width: 40rem;
   text-align: center;
   width: 100%;
 }
 
 .pokemon-table {
-  border: none;
-  border-collapse: collapse;
   width: 100%;
 }
 
@@ -29,13 +26,15 @@
   }
 }
 
+.pokemon-table tr:nth-child(odd) td {
+  background-color: #f8f8f8;
+}
+
 .pokemon-table-link {
   color: var(--color-table-link);
   cursor: pointer;
   display: block;
-  font-weight: 500;
   text-decoration: none;
-  transition: color 0.2s;
 }
 
 .pokemon-table-link:active {

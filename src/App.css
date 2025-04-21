@@ -53,18 +53,6 @@
   font-size: inherit;
 }
 
-:where([type="search"]) {
-  -webkit-appearance: textfield;
-}
-
-/* iOS only */
-@supports (-webkit-touch-callout: none) {
-  :where([type="search"]) {
-    border: 1px solid -apple-system-secondary-label;
-    background-color: canvas;
-  }
-}
-
 :where(table) {
   border-collapse: collapse;
 }

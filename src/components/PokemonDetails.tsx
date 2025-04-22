@@ -3,6 +3,7 @@ import { useParams, useLocation, Link } from 'react-router-dom';
 import { usePokemonDetails } from '../hooks/usePokemonDetails';
 import { usePokemonAbility } from '../hooks/usePokemonAbility';
 import './PokemonDetails.css';
+import SkeletonDetails from './SkeletonDetails';
 
 interface Ability {
   ability: { name: string; url: string };
@@ -24,11 +25,17 @@ const AbilityRow: React.FC<{ abilityName: string }> = ({ abilityName }) => {
   );
 };
 
+import type { PokemonDetails as PokemonDetailsType } from '../types/pokemon.types';
+
 const PokemonDetails: React.FC = () => {
   const { name } = useParams<{ name: string }>();
   const location = useLocation();
   const fromPage = location.state?.fromPage || 1;
-  const { data, isLoading, error } = usePokemonDetails(name!);
+  const { data, isLoading, error } = usePokemonDetails(name!) as {
+    data: PokemonDetailsType | undefined;
+    isLoading: boolean;
+    error: Error | null;
+  };
 
   return (
     <div
@@ -42,7 +49,7 @@ const PokemonDetails: React.FC = () => {
         Selected Pokémon: {name}
       </h2>
       {isLoading ? (
-        <div>Loading abilities...</div>
+        <SkeletonDetails />
       ) : error ? (
         <div className='pokemon-details-error'>
           Error: {error.message || String(error)}
@@ -59,8 +66,8 @@ const PokemonDetails: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.abilities?.map((ab: Ability) => (
-              <AbilityRow key={ab.ability.name} abilityName={ab.ability.name} />
+            {(data?.abilities ?? []).map((a: Ability) => (
+              <AbilityRow key={a.ability.name} abilityName={a.ability.name} />
             ))}
           </tbody>
         </table>

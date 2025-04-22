@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { usePokemonList } from '../hooks/usePokemonList';
+import { useQueryClient } from '@tanstack/react-query';
+import { POKEMON_API_BASE_URL } from '../constants/pokemon.constants';
 import './PokemonTable.css';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
@@ -38,6 +40,16 @@ const PokemonTable: React.FC = () => {
   const handlePrevPage = () => setCurrentPage((page) => Math.max(1, page - 1));
   const handleNextPage = () =>
     setCurrentPage((page) => Math.min(totalPages, page + 1));
+
+  const queryClient = useQueryClient();
+
+  const handleRowHover = (poke: { name: string }) => {
+    queryClient.prefetchQuery(['pokemonDetails', poke.name], () =>
+      fetch(
+        `${POKEMON_API_BASE_URL}pokemon/${poke.name}`
+      ).then(res => res.json())
+    );
+  };
 
   const handleRowClick = (poke: { name: string }) =>
     navigate(`/pokemon/${poke.name}`, { state: { fromPage: currentPage } });
@@ -78,6 +90,7 @@ const PokemonTable: React.FC = () => {
                     e.preventDefault();
                     handleRowClick(poke);
                   }}
+                  onMouseEnter={() => handleRowHover(poke)}
                   role='button'
                 >
                   {poke.name}

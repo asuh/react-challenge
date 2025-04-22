@@ -44,12 +44,13 @@ const PokemonTable: React.FC = () => {
   const queryClient = useQueryClient();
 
   const handleRowHover = (poke: { name: string }) => {
-    queryClient.prefetchQuery(['pokemonDetails', poke.name], () =>
-      fetch(
-        `${POKEMON_API_BASE_URL}pokemon/${poke.name}`
-      ).then(res => res.json())
-    );
+    queryClient.prefetchQuery({
+      queryKey: ['pokemonDetails', poke.name],
+      queryFn: () =>
+        fetch(`${POKEMON_API_BASE_URL}pokemon/${poke.name}`).then(res => res.json()),
+    });
   };
+
 
   const handleRowClick = (poke: { name: string }) =>
     navigate(`/pokemon/${poke.name}`, { state: { fromPage: currentPage } });

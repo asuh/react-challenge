@@ -14,6 +14,6 @@ export function usePokemonDetails(name: string) {
     queryKey: ['pokemonDetails', name],
     queryFn: () => fetchPokemonDetails(name),
     enabled: !!name,
-    staleTime: 1000 * 60 * 60, // 1 hour
+    staleTime: 1000 * 60 * 60 // 1 hour
   });
 }

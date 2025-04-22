@@ -2,15 +2,22 @@ import { useState, useEffect } from 'react';
 import fetchPokemon from './fetchPokemon';
 import { usePokemonCache } from '../context/PokemonCacheContext';
 
-interface Ability { ability: { name: string; url: string } }
-interface AbilityWithEffect { name: string; effect: string }
+interface Ability {
+  ability: { name: string; url: string };
+}
+interface AbilityWithEffect {
+  name: string;
+  effect: string;
+}
 
 async function fetchAbilityEffects(
   abilityData: Ability[],
   abilityCache: Record<string, string>,
   setAbilityEffect: (abilityName: string, effect: string) => void
 ): Promise<AbilityWithEffect[]> {
-  const fetchEffect = async ({ ability: { name, url } }: Ability): Promise<AbilityWithEffect> => {
+  const fetchEffect = async ({
+    ability: { name, url }
+  }: Ability): Promise<AbilityWithEffect> => {
     if (abilityCache[name]) {
       return { name, effect: abilityCache[name] };
     }
@@ -18,7 +25,9 @@ async function fetchAbilityEffects(
       const res = await fetch(url);
       if (!res.ok) throw new Error();
       const detail = await res.json();
-      const entry = detail.effect_entries?.find((e: any) => e.language.name === 'en');
+      const entry = detail.effect_entries?.find(
+        (e: any) => e.language.name === 'en'
+      );
       const effect = entry?.effect ?? 'No effect found';
       setAbilityEffect(name, effect);
       return { name, effect };
@@ -53,7 +62,11 @@ export function usePokemonDetails(name?: string) {
           data = result.data;
           setPokemon(name, data);
         }
-        const effects = await fetchAbilityEffects(data.abilities || [], cache.abilities, setAbilityEffect);
+        const effects = await fetchAbilityEffects(
+          data.abilities || [],
+          cache.abilities,
+          setAbilityEffect
+        );
         if (!ignore) setAbilities(effects);
       } catch (e: any) {
         if (!ignore) setError(e.message || 'Unknown error');
@@ -62,7 +75,9 @@ export function usePokemonDetails(name?: string) {
       }
     };
     load();
-    return () => { ignore = true; };
+    return () => {
+      ignore = true;
+    };
   }, [name, cache.pokemon, cache.abilities, setPokemon, setAbilityEffect]);
 
   return { abilities, loading, error };

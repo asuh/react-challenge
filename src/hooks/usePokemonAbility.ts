@@ -9,7 +9,9 @@ const fetchPokemonAbility = async (name: string): Promise<PokemonAbility> => {
   const data: PokemonAbility = await res.json();
   return {
     ...data,
-    effect_entries: data.effect_entries.filter(entry => entry.language.name === 'en'),
+    effect_entries: data.effect_entries.filter(
+      (entry) => entry.language.name === 'en'
+    )
   };
 };
 
@@ -18,6 +20,6 @@ export function usePokemonAbility(name: string) {
     queryKey: ['pokemonAbility', name],
     queryFn: () => fetchPokemonAbility(name),
     enabled: !!name,
-    staleTime: 1000 * 60 * 60, // 1 hour
+    staleTime: 1000 * 60 * 60 // 1 hour
   });
 }

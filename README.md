@@ -33,3 +33,13 @@ You may install or add any packages, files, or folders which help accomplish the
 
 - This table should have a link back to the list view
 - CSS for the tables should match the mockups
+
+## Trailing notes from myself
+
+With more ownership over this exercise, I would reevaluate the following:
+
+- MUI does not add the value it tries to provide b/c of the package sizes and quantity
+- Because all bytes should be accountable, styling and iconography can be used via CSS and specific SVGs. This helps with complexity
+- State management could be simple enough with custom queries and caching, but b/c of time spent and complexities, I opted for React Query
+- Redux Toolkit could have been a good direction, but did not seem necessary for this project
+- I did not do the best job with mixing data fetching and views, specifically for PokemonTable. Ultimately, this could be further optimized to prevent rerenders and keep components slim

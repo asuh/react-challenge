@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { usePokemonList } from '../hooks/usePokemonList';
 import { useQueryClient } from '@tanstack/react-query';
 import { POKEMON_API_BASE_URL } from '../constants/pokemon.constants';
@@ -14,7 +14,7 @@ const ROWS_PER_PAGE = 5;
 const PokemonTable: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const pageParam = parseInt(searchParams.get('page') || '1', 10);
+  const pageParam = Number.parseInt(searchParams.get('page') || '1', 10);
   const [currentPage, setCurrentPage] = useState(pageParam);
 
   const offset = 0;
@@ -51,7 +51,6 @@ const PokemonTable: React.FC = () => {
     });
   };
 
-
   const handleRowClick = (poke: { name: string }) =>
     navigate(`/pokemon/${poke.name}`, { state: { fromPage: currentPage } });
 
@@ -65,10 +64,8 @@ const PokemonTable: React.FC = () => {
     );
 
   return (
-    <div
+    <section
       className='pokemon-table-container'
-      tabIndex={0}
-      role='region'
       aria-labelledby='pokemon-table-title'
     >
       <table className='pokemon-table'>
@@ -84,18 +81,9 @@ const PokemonTable: React.FC = () => {
           {pageData.map((poke) => (
             <tr key={poke.name}>
               <td>
-                <a
-                  href='#'
-                  className='pokemon-table-link'
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleRowClick(poke);
-                  }}
-                  onMouseEnter={() => handleRowHover(poke)}
-                  role='button'
-                >
+                <Link to={`/pokemon/${poke.name}`} className='pokemon-table-link'>
                   {poke.name}
-                </a>
+                </Link>
               </td>
             </tr>
           ))}
@@ -138,7 +126,7 @@ const PokemonTable: React.FC = () => {
           <LastPageIcon />
         </button>
       </div>
-    </div>
+    </section>
   );
 };
 

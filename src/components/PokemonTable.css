@@ -17,7 +17,6 @@
 }
 
 .pokemon-table td {
-  padding: 1rem;
   text-transform: capitalize;
   text-align: start;
 
@@ -34,6 +33,7 @@
   color: var(--color-table-link);
   cursor: pointer;
   display: block;
+  padding: 1rem;
   text-decoration: none;
 }
 

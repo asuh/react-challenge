@@ -1,9 +1,9 @@
-import React from 'react';
+import type React from 'react';
 import './SkeletonDetails.css';
 
 const SkeletonDetails: React.FC = () => (
   <div className='skeleton-details'>
-    <h2 className='skeleton-heading skeleton-animate' />
+    <h2 className='skeleton-heading skeleton-animate visually-hidden'>Skeleton Page for Loading</h2>
     <table className='pokemon-details-table'>
       <caption className='visually-hidden'>Loading Abilities</caption>
       <thead>

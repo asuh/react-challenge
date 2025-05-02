@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { usePokemonList } from '../hooks/usePokemonList';
 import { useQueryClient } from '@tanstack/react-query';

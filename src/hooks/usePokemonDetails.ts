@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { PokemonDetails } from '../types/pokemon.types';
+import type { PokemonDetails } from '../types/pokemon.types';
 
 import { POKEMON_API_BASE_URL } from '../constants/pokemon.constants';
 
@@ -15,6 +15,5 @@ export function usePokemonDetails(name: string) {
     queryFn: () => fetchPokemonDetails(name),
     enabled: !!name,
     staleTime: 1000 * 60 * 60, // 1 hour
-    keepPreviousData: true,
   });
 }

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { PokemonAbility } from '../types/pokemon.types';
+import type { PokemonAbility } from '../types/pokemon.types';
 
 import { POKEMON_API_BASE_URL } from '../constants/pokemon.constants';
 

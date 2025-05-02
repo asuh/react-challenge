@@ -3,7 +3,7 @@ import {
   PAGE_SIZE,
   POKEMON_API_BASE_URL
 } from '../constants/pokemon.constants';
-import { PokemonListResponse } from '../types/pokemon.types';
+import type { PokemonListResponse } from '../types/pokemon.types';
 
 const fetchPokemonList = async (
   offset: number

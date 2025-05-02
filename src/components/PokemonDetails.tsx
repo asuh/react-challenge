@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { usePokemonDetails } from '../hooks/usePokemonDetails';
 import { usePokemonAbility } from '../hooks/usePokemonAbility';
@@ -31,17 +31,17 @@ const PokemonDetails: React.FC = () => {
   const { name } = useParams<{ name: string }>();
   const location = useLocation();
   const fromPage = location.state?.fromPage || 1;
-  const { data, isLoading, error } = usePokemonDetails(name!) as {
-    data: PokemonDetailsType | undefined;
-    isLoading: boolean;
-    error: Error | null;
-  };
+  const { data, isLoading, error } = name
+    ? (usePokemonDetails(name) as {
+        data: PokemonDetailsType | undefined;
+        isLoading: boolean;
+        error: Error | null;
+      })
+    : { data: undefined, isLoading: false, error: null };
 
   return (
-    <div
+    <section
       className='pokemon-details-container'
-      tabIndex={0}
-      role='region'
       aria-labelledby='pokemon-details-title'
       aria-describedby='pokemon-details-description'
     >
@@ -80,7 +80,7 @@ const PokemonDetails: React.FC = () => {
           Back to list view
         </Link>
       </div>
-    </div>
+    </section>
   );
 };
 
